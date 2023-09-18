@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2021" /* Specify the target ECMAScript version */,
+    "module": "commonjs" /* Specify the module system (CommonJS for Node.js) */,
+    "outDir": "./dist" /* Specify the output directory for compiled files */,
+    "rootDir": "./src" /* Specify the root directory of your source files */,
+    "strict": true /* Enable strict type-checking */,
+    "esModuleInterop": true /* Allow default imports from CommonJS modules */,
+    "skipLibCheck": true /* Skip type checking of declaration files */,
+    "forceConsistentCasingInFileNames": true /* Ensure consistent casing in file names */
+  },
+  "include": ["src/**/*.ts" /* Specify the files to be included for compilation */],
+  "exclude": ["node_modules" /* Exclude the node_modules directory */]
+}
