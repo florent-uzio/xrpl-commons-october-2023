@@ -1,10 +1,10 @@
-require("@nomicfoundation/hardhat-toolbox")
-require("dotenv").config()
+import "@nomicfoundation/hardhat-toolbox"
+import "dotenv/config"
+import { HardhatUserConfig } from "hardhat/config"
 
 const PRIVATE_ACCOUNT_KEY = process.env.PRIVATE_KEY ?? ""
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+const config: HardhatUserConfig = {
   solidity: "0.8.19",
   networks: {
     xrpl: {
@@ -14,3 +14,5 @@ module.exports = {
     },
   },
 }
+
+export default config
