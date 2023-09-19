@@ -2,9 +2,14 @@
 // All packages except `@mantine/hooks` require styles imports
 import { MantineProvider } from "@mantine/core"
 import "@mantine/core/styles.css"
+import { HomePage } from "./pages"
 
 function App() {
-  return <MantineProvider>{/* Your app here */}</MantineProvider>
+  return (
+    <MantineProvider>
+      <HomePage />
+    </MantineProvider>
+  )
 }
 
 export default App
