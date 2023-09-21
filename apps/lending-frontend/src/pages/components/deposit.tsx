@@ -31,6 +31,7 @@ export const Deposit = () => {
     <Card>
       <CardHeader>
         <Heading size="md">Deposit</Heading>
+        <Text>Credit your account with some XRP</Text>
       </CardHeader>
       <CardBody>
         <Image

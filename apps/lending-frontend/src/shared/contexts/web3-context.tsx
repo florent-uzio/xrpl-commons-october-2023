@@ -8,6 +8,8 @@ type Web3ContextApi = {
   currentAccount: string
   deposit: (amount: string) => void
   getMyBalance: () => Promise<string | undefined>
+  lend: (amount: string, borrower: string) => Promise<void>
+  getMyBorrowedAmount: () => Promise<string | undefined>
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -67,6 +69,19 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     await lendingContract.deposit({ value: ethers.parseEther(amount) })
   }
 
+  const lend = async (amount: string, borrower: string) => {
+    if (!window.ethereum) return
+
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+
+    const convertedAmount = ethers.parseEther(amount)
+
+    await lendingContract.lend(borrower, ethers.toBigInt(convertedAmount))
+  }
+
   const getMyBalance = async () => {
     if (!window.ethereum) return
     const provider = new ethers.BrowserProvider(window.ethereum)
@@ -80,6 +95,19 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     return depositedBal
   }
 
+  const getMyBorrowedAmount = async () => {
+    if (!window.ethereum) return
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+
+    const borrowedBalance = await lendingContract.lentAmounts(currentAccount)
+
+    const borrowedBal = ethers.formatUnits(borrowedBalance, "ether")
+    return borrowedBal
+  }
+
   return (
     <Web3Context.Provider
       value={{
@@ -87,6 +115,8 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
         currentAccount,
         deposit,
         getMyBalance,
+        getMyBorrowedAmount,
+        lend,
       }}
     >
       {children}
