@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react"
+// import LendingAddress from '../../contracts/contract-address.json'
 
 type Web3ContextApi = {
   connectWallet: () => void
 }
-
-const SMART_CONTRACT_ADDRESS = import.meta.env.VITE_SMART_CONTRACT_ADDRESS
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
 
