@@ -4,7 +4,7 @@ import { useWeb3 } from "../../shared/contexts"
 
 export const MyBalance = () => {
   const { getMyBalance, currentAccount } = useWeb3()
-  const [balance, setBalance] = useState<number>(0)
+  const [balance, setBalance] = useState(0)
 
   const getBalance = async () => {
     const bal = await getMyBalance()
@@ -13,10 +13,13 @@ export const MyBalance = () => {
     }
   }
   useEffect(() => {
-    if (currentAccount) {
-      setInterval(() => {
-        getBalance()
-      }, 1000)
+    if (!currentAccount) return
+    const interval = setInterval(() => {
+      getBalance()
+    }, 1000)
+
+    return () => {
+      clearInterval(interval)
     }
   }, [currentAccount])
 

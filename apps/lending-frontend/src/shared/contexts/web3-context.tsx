@@ -76,11 +76,19 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
     const balance = await lendingContract.getMyBalance()
 
-    return ethers.formatUnits(balance, "ether")
+    const depositedBal = ethers.formatUnits(balance, "ether")
+    return depositedBal
   }
 
   return (
-    <Web3Context.Provider value={{ connectWallet, currentAccount, deposit, getMyBalance }}>
+    <Web3Context.Provider
+      value={{
+        connectWallet,
+        currentAccount,
+        deposit,
+        getMyBalance,
+      }}
+    >
       {children}
     </Web3Context.Provider>
   )
