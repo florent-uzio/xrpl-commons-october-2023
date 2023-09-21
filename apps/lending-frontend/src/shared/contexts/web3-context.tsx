@@ -6,8 +6,8 @@ import LendingAddress from "../../contracts/contract-address.json"
 type Web3ContextApi = {
   connectWallet: () => void
   currentAccount: string
-  deposit: (amount: number) => void
-  getMyBalance: () => Promise<bigint | undefined>
+  deposit: (amount: string) => void
+  getMyBalance: () => Promise<string | undefined>
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -56,22 +56,27 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     window.location.reload()
   }
 
-  const deposit = async (amount: number) => {
+  const deposit = async (amount: string) => {
     if (!window.ethereum) return
+
     const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, provider)
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    await lendingContract.deposit({ value: amount })
+    await lendingContract.deposit({ value: ethers.parseEther(amount) })
   }
 
   const getMyBalance = async () => {
     if (!window.ethereum) return
     const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, provider)
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    return lendingContract.getMyBalance()
+    const balance = await lendingContract.getMyBalance()
+
+    return ethers.formatUnits(balance, "ether")
   }
 
   return (

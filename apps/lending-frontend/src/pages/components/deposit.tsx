@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -11,8 +12,21 @@ import {
   InputLeftElement,
   Text,
 } from "@chakra-ui/react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { useWeb3 } from "../../shared/contexts"
+
+type DepositForm = {
+  amount: string
+}
 
 export const Deposit = () => {
+  const { register, handleSubmit, watch } = useForm<DepositForm>()
+  const { deposit, currentAccount } = useWeb3()
+
+  const onSubmit: SubmitHandler<DepositForm> = async ({ amount }) => {
+    deposit(amount)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -26,15 +40,25 @@ export const Deposit = () => {
           alt="Deposit"
         />
 
-        <FormControl mt="8">
-          <FormLabel>Amount</FormLabel>
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <Text>XRP</Text>
-            </InputLeftElement>
-            <Input type="number" />
-          </InputGroup>
-        </FormControl>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl mt="8">
+            <FormLabel>Amount</FormLabel>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <Text>XRP</Text>
+              </InputLeftElement>
+              <Input {...register("amount")} type="number" step=".01" />
+            </InputGroup>
+            <Button
+              isDisabled={currentAccount === "" || watch("amount") === ""}
+              mt="2"
+              size="sm"
+              type="submit"
+            >
+              Deposit
+            </Button>
+          </FormControl>
+        </form>
       </CardBody>
     </Card>
   )

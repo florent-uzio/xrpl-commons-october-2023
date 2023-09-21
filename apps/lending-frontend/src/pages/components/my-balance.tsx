@@ -14,7 +14,9 @@ export const MyBalance = () => {
   }
   useEffect(() => {
     if (currentAccount) {
-      getBalance()
+      setInterval(() => {
+        getBalance()
+      }, 1000)
     }
   }, [currentAccount])
 
