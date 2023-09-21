@@ -1,6 +1,6 @@
-import { Contract } from "ethers"
 import { artifacts, ethers } from "hardhat"
 import path from "path"
+import { Lending } from "../typechain-types"
 
 async function main() {
   const lending = await ethers.deployContract("Lending")
@@ -13,9 +13,9 @@ async function main() {
   saveFrontendFiles(lending)
 }
 
-function saveFrontendFiles(lending: Contract) {
+function saveFrontendFiles(lending: Lending) {
   const fs = require("fs")
-  const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts")
+  const contractsDir = path.join(__dirname, "../..", "lending-frontend", "src", "contracts")
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir)
@@ -23,7 +23,7 @@ function saveFrontendFiles(lending: Contract) {
 
   fs.writeFileSync(
     path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ Lending: lending.address }, undefined, 2),
+    JSON.stringify({ Lending: lending.target }, undefined, 2),
   )
 
   const LendingArtifact = artifacts.readArtifactSync("Lending")
