@@ -7,6 +7,7 @@ type Web3ContextApi = {
   connectWallet: () => void
   currentAccount: string
   deposit: (amount: number) => void
+  getMyBalance: () => Promise<bigint | undefined>
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -36,6 +37,11 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     checkIfWalletIsConnected()
   }, [])
 
+  // Update account address when changing account in metamask
+  window.ethereum.on("accountsChanged", function (accounts: any) {
+    setCurrentAccount(accounts[0])
+  })
+
   const connectWallet = async () => {
     if (!window.ethereum) {
       return alert("Please install Metamask")
@@ -59,8 +65,17 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     await lendingContract.deposit({ value: amount })
   }
 
+  const getMyBalance = async () => {
+    if (!window.ethereum) return
+    const provider = new ethers.BrowserProvider(window.ethereum)
+
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, provider)
+
+    return lendingContract.getMyBalance()
+  }
+
   return (
-    <Web3Context.Provider value={{ connectWallet, currentAccount, deposit }}>
+    <Web3Context.Provider value={{ connectWallet, currentAccount, deposit, getMyBalance }}>
       {children}
     </Web3Context.Provider>
   )
