@@ -1,8 +1,12 @@
+import { ethers } from "ethers"
 import { createContext, useContext, useEffect, useState } from "react"
-// import LendingAddress from '../../contracts/contract-address.json'
+import { Lending__factory } from "../../contracts"
+import LendingAddress from "../../contracts/contract-address.json"
 
 type Web3ContextApi = {
   connectWallet: () => void
+  currentAccount: string
+  deposit: (amount: number) => void
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -46,7 +50,20 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     window.location.reload()
   }
 
-  return <Web3Context.Provider value={{ connectWallet }}>{children}</Web3Context.Provider>
+  const deposit = async (amount: number) => {
+    if (!window.ethereum) return
+    const provider = new ethers.BrowserProvider(window.ethereum)
+
+    const lendingContract = Lending__factory.connect(LendingAddress.Lending, provider)
+
+    await lendingContract.deposit({ value: amount })
+  }
+
+  return (
+    <Web3Context.Provider value={{ connectWallet, currentAccount, deposit }}>
+      {children}
+    </Web3Context.Provider>
+  )
 }
 
 export const useWeb3 = () => {
