@@ -1,5 +1,9 @@
-import { Container } from "@mantine/core"
+import { Container, Text } from "@chakra-ui/react"
 
 export const HomePage = () => {
-  return <Container>Test</Container>
+  return (
+    <Container>
+      <Text>Hello</Text>
+    </Container>
+  )
 }
