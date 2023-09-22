@@ -21,18 +21,18 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export interface LendingInterface extends Interface {
+export interface SimpleBankInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "balances"
       | "deposit"
-      | "getMyBalance"
-      | "getMyBorrowedBalance"
-      | "interestRate"
-      | "lend"
-      | "lentAmounts"
-      | "repay"
-      | "setInterestRate"
+      | "getBalance"
+      | "getBankBalance"
+      | "getLoanAmount"
+      | "loan"
+      | "loans"
+      | "owner"
+      | "repayLoan"
       | "withdraw"
   ): FunctionFragment;
 
@@ -42,70 +42,46 @@ export interface LendingInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "getMyBalance",
+    functionFragment: "getBalance",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getMyBorrowedBalance",
+    functionFragment: "getBankBalance",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "interestRate",
+    functionFragment: "getLoanAmount",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "lend",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "lentAmounts",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "repay",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setInterestRate",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "loan", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "loans", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "repayLoan", values?: undefined): string;
+  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "balances", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getMyBalance",
+    functionFragment: "getBankBalance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getMyBorrowedBalance",
+    functionFragment: "getLoanAmount",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "interestRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "lend", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "lentAmounts",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "repay", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setInterestRate",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "loan", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "loans", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "repayLoan", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 }
 
-export interface Lending extends BaseContract {
-  connect(runner?: ContractRunner | null): Lending;
+export interface SimpleBank extends BaseContract {
+  connect(runner?: ContractRunner | null): SimpleBank;
   waitForDeployment(): Promise<this>;
 
-  interface: LendingInterface;
+  interface: SimpleBankInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -148,33 +124,21 @@ export interface Lending extends BaseContract {
 
   deposit: TypedContractMethod<[], [void], "payable">;
 
-  getMyBalance: TypedContractMethod<[], [bigint], "view">;
+  getBalance: TypedContractMethod<[], [bigint], "view">;
 
-  getMyBorrowedBalance: TypedContractMethod<[], [bigint], "view">;
+  getBankBalance: TypedContractMethod<[], [bigint], "view">;
 
-  interestRate: TypedContractMethod<[], [bigint], "view">;
+  getLoanAmount: TypedContractMethod<[], [bigint], "view">;
 
-  lend: TypedContractMethod<
-    [borrower: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  loan: TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
 
-  lentAmounts: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  loans: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  repay: TypedContractMethod<
-    [lender: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  owner: TypedContractMethod<[], [string], "view">;
 
-  setInterestRate: TypedContractMethod<
-    [rate: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  repayLoan: TypedContractMethod<[], [void], "payable">;
 
-  withdraw: TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  withdraw: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -187,37 +151,29 @@ export interface Lending extends BaseContract {
     nameOrSignature: "deposit"
   ): TypedContractMethod<[], [void], "payable">;
   getFunction(
-    nameOrSignature: "getMyBalance"
+    nameOrSignature: "getBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getMyBorrowedBalance"
+    nameOrSignature: "getBankBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "interestRate"
+    nameOrSignature: "getLoanAmount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "lend"
-  ): TypedContractMethod<
-    [borrower: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+    nameOrSignature: "loan"
+  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "lentAmounts"
+    nameOrSignature: "loans"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "repay"
-  ): TypedContractMethod<
-    [lender: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+    nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "setInterestRate"
-  ): TypedContractMethod<[rate: BigNumberish], [void], "nonpayable">;
+    nameOrSignature: "repayLoan"
+  ): TypedContractMethod<[], [void], "payable">;
   getFunction(
     nameOrSignature: "withdraw"
-  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<[], [void], "nonpayable">;
 
   filters: {};
 }

@@ -1,15 +1,13 @@
-import { ethers } from "ethers"
 import { createContext, useContext, useEffect, useState } from "react"
-import { Lending__factory } from "../../contracts"
-import LendingAddress from "../../contracts/contract-address.json"
 
 type Web3ContextApi = {
   connectWallet: () => void
   currentAccount: string
-  deposit: (amount: string) => void
-  getMyBalance: () => Promise<string | undefined>
-  lend: (amount: string, borrower: string) => Promise<void>
-  getMyBorrowedAmount: () => Promise<string | undefined>
+  // deposit: (amount: string) => void
+  // getMyBalance: () => Promise<string | undefined>
+  // lend: (amount: string, borrower: string) => Promise<void>
+  // getMyBorrowedAmount: () => Promise<string | undefined>
+  // repay: (lender: string, amount: string) => Promise<void>
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -58,65 +56,77 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     window.location.reload()
   }
 
-  const deposit = async (amount: string) => {
-    if (!window.ethereum) return
+  // const deposit = async (amount: string) => {
+  //   if (!window.ethereum) return
 
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
+  //   const provider = new ethers.BrowserProvider(window.ethereum)
+  //   const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+  //   const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    await lendingContract.deposit({ value: ethers.parseEther(amount) })
-  }
+  //   await lendingContract.deposit({ value: ethers.parseEther(amount) })
+  // }
 
-  const lend = async (amount: string, borrower: string) => {
-    if (!window.ethereum) return
+  // const lend = async (amount: string, borrower: string) => {
+  //   if (!window.ethereum) return
 
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
+  //   const provider = new ethers.BrowserProvider(window.ethereum)
+  //   const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+  //   const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    const convertedAmount = ethers.parseEther(amount)
+  //   const convertedAmount = ethers.parseEther(amount)
 
-    await lendingContract.lend(borrower, ethers.toBigInt(convertedAmount))
-  }
+  //   await lendingContract.lend(borrower, ethers.toBigInt(convertedAmount))
+  // }
 
-  const getMyBalance = async () => {
-    if (!window.ethereum) return
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
+  // const getMyBalance = async () => {
+  //   if (!window.ethereum) return
+  //   const provider = new ethers.BrowserProvider(window.ethereum)
+  //   const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+  //   const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    const balance = await lendingContract.getMyBalance()
+  //   const balance = await lendingContract.getMyBalance()
 
-    const depositedBal = ethers.formatUnits(balance, "ether")
-    return depositedBal
-  }
+  //   const depositedBal = ethers.formatUnits(balance, "ether")
+  //   return depositedBal
+  // }
 
-  const getMyBorrowedAmount = async () => {
-    if (!window.ethereum) return
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
+  // const getMyBorrowedAmount = async () => {
+  //   if (!window.ethereum) return
+  //   const provider = new ethers.BrowserProvider(window.ethereum)
+  //   const signer = await provider.getSigner()
 
-    const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+  //   const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
 
-    const borrowedBalance = await lendingContract.lentAmounts(currentAccount)
+  //   const borrowedBalance = await lendingContract.getMyBorrowedBalance()
 
-    const borrowedBal = ethers.formatUnits(borrowedBalance, "ether")
-    return borrowedBal
-  }
+  //   const borrowedBal = ethers.formatUnits(borrowedBalance, "ether")
+  //   return borrowedBal
+  // }
+
+  // const repay = async (lender: string, amount: string) => {
+  //   if (!window.ethereum) return
+  //   const provider = new ethers.BrowserProvider(window.ethereum)
+  //   const signer = await provider.getSigner()
+
+  //   const lendingContract = Lending__factory.connect(LendingAddress.Lending, signer)
+
+  //   const convertedAmount = ethers.parseEther(amount)
+  //   await lendingContract.repay(lender, convertedAmount)
+  // }
 
   return (
     <Web3Context.Provider
       value={{
         connectWallet,
         currentAccount,
-        deposit,
-        getMyBalance,
-        getMyBorrowedAmount,
-        lend,
+        // deposit,
+        // getMyBalance,
+        // getMyBorrowedAmount,
+        // lend,
+        // repay,
       }}
     >
       {children}

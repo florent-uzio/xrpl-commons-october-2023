@@ -12,7 +12,11 @@ import {
   InputLeftElement,
   Text,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
+import { useCallback } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { SimpleBank__factory } from "../../contracts"
+import SimpleBank from "../../contracts/contract-address.json"
 import { useWeb3 } from "../../shared/contexts"
 
 type DepositForm = {
@@ -21,10 +25,19 @@ type DepositForm = {
 
 export const Deposit = () => {
   const { register, handleSubmit, watch } = useForm<DepositForm>()
-  const { deposit, currentAccount } = useWeb3()
+  const { currentAccount } = useWeb3()
+
+  const deposit = useCallback(async (amount: string) => {
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+
+    const contract = SimpleBank__factory.connect(SimpleBank.address, signer)
+
+    await contract.deposit({ value: ethers.parseEther(amount) })
+  }, [])
 
   const onSubmit: SubmitHandler<DepositForm> = async ({ amount }) => {
-    deposit(amount)
+    await deposit(amount)
   }
 
   return (

@@ -1,5 +1,5 @@
 import { Container, Flex, Heading } from "@chakra-ui/react"
-import { BorrowedBalance, Deposit, Lend, MyBalance } from "./components"
+import { BorrowedBalance, Deposit, Lend, MyBalance, Repay } from "./components"
 
 export const HomePage = () => {
   return (
@@ -13,6 +13,7 @@ export const HomePage = () => {
         <Flex gap={3}>
           <Deposit />
           <Lend />
+          <Repay />
         </Flex>
       </Flex>
     </Container>

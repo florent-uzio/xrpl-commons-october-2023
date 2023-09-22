@@ -34,7 +34,7 @@ contract Lending {
     }
 
     function repay(address lender, uint256 amount) external {
-        require(lentAmounts[msg.sender] >= amount, "Insufficient borrowed amount");
+        require(lentAmounts[msg.sender] >= amount, "Insufficient amount to repay");
 
         // Transfer assets from borrower to lender
         lentAmounts[msg.sender] -= amount;
@@ -44,6 +44,11 @@ contract Lending {
     // Add more advanced interest calculation and management functions
     function getMyBalance() external view returns (uint256) {
         return balances[msg.sender];
+    }
+
+    // Add more advanced interest calculation and management functions
+    function getMyBorrowedBalance() external view returns (uint256) {
+        return lentAmounts[msg.sender];
     }
 
     function setInterestRate(uint256 rate) external {

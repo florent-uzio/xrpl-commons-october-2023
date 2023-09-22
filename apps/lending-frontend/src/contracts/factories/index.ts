@@ -3,3 +3,4 @@
 /* eslint-disable */
 export { Lending__factory } from "./Lending__factory";
 export { Lock__factory } from "./Lock__factory";
+export { SimpleBank__factory } from "./SimpleBank__factory";

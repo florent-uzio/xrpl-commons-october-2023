@@ -1,7 +1,7 @@
 {
   "name": "hardhat-project",
   "scripts": {
-    "deploy-lending": "npx hardhat run scripts/deploy.ts --network xrpl"
+    "deploy-contract": "npx hardhat run scripts/deploy.ts --network xrpl"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
