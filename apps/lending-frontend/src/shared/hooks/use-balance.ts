@@ -12,9 +12,11 @@ const provider = new ethers.BrowserProvider(window.ethereum)
 export const useBalance = () => {
   const [balance, setBalance] = useState(0)
   const [bankBalance, setBankBalance] = useState(0)
+  const [loanBalance, setLoanBalance] = useState(0)
   // previous balance value
   const prevBalanceRef = useRef(0)
   const prevBankBalanceRef = useRef(0)
+  const prevLoanBalanceRef = useRef(0)
   const { owner, currentAccount } = useWeb3()
 
   const fetchBalance = useCallback(async () => {
@@ -31,17 +33,8 @@ export const useBalance = () => {
     if (owner === address) {
       await getBankBalance(contract)
     }
-    // const rawBalance = await contract.getBalance()
 
-    // // Format ETH balance and parse it to JS number
-    // const value = parseFloat(ethers.formatEther(rawBalance))
-
-    // // Optimization: check that user balance has actually changed before
-    // // updating state and triggering the consuming component re-render
-    // if (value !== prevBalanceRef.current) {
-    //   prevBalanceRef.current = value
-    //   setBalance(value)
-    // }
+    await getLoanBalance(contract)
   }, [currentAccount, owner])
 
   const getMyBalance = async (contract: SimpleBank) => {
@@ -56,12 +49,24 @@ export const useBalance = () => {
     }
   }
 
+  const getLoanBalance = async (contract: SimpleBank) => {
+    const rawBalance = await contract.getLoanAmount()
+
+    // Format ETH balance and parse it to JS number
+    const value = parseFloat(ethers.formatEther(rawBalance))
+
+    if (value !== prevBalanceRef.current) {
+      prevLoanBalanceRef.current = value
+      setLoanBalance(value)
+    }
+  }
+
   const getBankBalance = async (contract: SimpleBank) => {
     const rawBalance = await contract.getBankBalance()
 
     // Format ETH balance and parse it to JS number
     const value = parseFloat(ethers.formatEther(rawBalance))
-    console.log({ value })
+
     if (value !== prevBankBalanceRef.current) {
       prevBankBalanceRef.current = value
       setBankBalance(value)
@@ -86,5 +91,6 @@ export const useBalance = () => {
   return {
     balance,
     bankBalance,
+    loanBalance,
   }
 }

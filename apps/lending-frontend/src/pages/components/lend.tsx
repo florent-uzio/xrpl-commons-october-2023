@@ -33,7 +33,8 @@ export const Lend = () => {
 
     const contract = SimpleBank__factory.connect(SimpleBank.address, signer)
 
-    await contract.loan(ethers.formatEther(amount))
+    const convertedAmount = ethers.parseEther(amount)
+    await contract.loan(ethers.toBigInt(convertedAmount))
   }
 
   return (
