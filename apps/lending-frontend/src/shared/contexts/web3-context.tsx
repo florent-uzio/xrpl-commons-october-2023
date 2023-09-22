@@ -7,11 +7,7 @@ type Web3ContextApi = {
   connectWallet: () => void
   currentAccount: string
   owner: string
-  // deposit: (amount: string) => void
-  // getMyBalance: () => Promise<string | undefined>
-  // lend: (amount: string, borrower: string) => Promise<void>
-  // getMyBorrowedAmount: () => Promise<string | undefined>
-  // repay: (lender: string, amount: string) => Promise<void>
+  isOwner: boolean
 }
 
 export const Web3Context = createContext<Web3ContextApi>({} as Web3ContextApi)
@@ -23,6 +19,7 @@ type Web3ProviderProps = {
 export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("")
   const [owner, setOwner] = useState("")
+  const [isOwner, setIsOwner] = useState(false)
 
   const checkIfWalletIsConnected = async () => {
     if (!window.ethereum) {
@@ -46,10 +43,17 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
     const provider = new ethers.BrowserProvider(window.ethereum)
     const signer = await provider.getSigner()
+    const connectedAddress = await signer.getAddress()
 
     const contract = SimpleBank__factory.connect(SimpleBankJson.address, signer)
 
     const ownerContract = await contract.owner()
+
+    if (ownerContract === connectedAddress) {
+      setIsOwner(true)
+    } else {
+      setIsOwner(false)
+    }
 
     setOwner(ownerContract)
   }
@@ -60,7 +64,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
         getOwnerContract()
       }
     })
-  }, [])
+  }, [currentAccount])
 
   // Update account address when changing account in metamask
   window.ethereum.on("accountsChanged", function (accounts: any) {
@@ -148,6 +152,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
         connectWallet,
         currentAccount,
         owner,
+        isOwner,
         // deposit,
         // getMyBalance,
         // getMyBorrowedAmount,

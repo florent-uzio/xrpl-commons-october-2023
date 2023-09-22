@@ -2,7 +2,7 @@ import { Flex, Text } from "@chakra-ui/react"
 import { useBalance } from "../../shared/hooks"
 
 export const MyBalance = () => {
-  const { balance } = useBalance("mine")
+  const { balance } = useBalance()
 
   return (
     <Flex gap={6} backgroundColor="blue.50" p="5" borderRadius="2xl">

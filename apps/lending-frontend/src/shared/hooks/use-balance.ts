@@ -4,20 +4,18 @@ import { SimpleBank, SimpleBank__factory } from "../../contracts"
 import SimpleBankJson from "../../contracts/contract-address.json"
 import { useWeb3 } from "../contexts"
 
-type BalanceType = "bank" | "mine" | "loan"
-
 // Ethers.js provides functionality to query data from ethereum blockchain.
 // We can use `BrowserProvider` class to construct a wrapper for
 // web3-compatible provider which we receive from metamask.
 const provider = new ethers.BrowserProvider(window.ethereum)
 
-export const useBalance = (balanceType: BalanceType) => {
+export const useBalance = () => {
   const [balance, setBalance] = useState(0)
   const [bankBalance, setBankBalance] = useState(0)
   // previous balance value
   const prevBalanceRef = useRef(0)
   const prevBankBalanceRef = useRef(0)
-  const { owner } = useWeb3()
+  const { owner, currentAccount } = useWeb3()
 
   const fetchBalance = useCallback(async () => {
     // Signer represents ethereum wallet in ethers.js. You cannot just send
@@ -28,9 +26,9 @@ export const useBalance = (balanceType: BalanceType) => {
 
     const contract = SimpleBank__factory.connect(SimpleBankJson.address, signer)
 
-    if (balanceType === "mine") {
-      await getMyBalance(contract)
-    } else if (balanceType === "bank" && owner === address) {
+    await getMyBalance(contract)
+
+    if (owner === address) {
       await getBankBalance(contract)
     }
     // const rawBalance = await contract.getBalance()
@@ -44,7 +42,7 @@ export const useBalance = (balanceType: BalanceType) => {
     //   prevBalanceRef.current = value
     //   setBalance(value)
     // }
-  }, [])
+  }, [currentAccount, owner])
 
   const getMyBalance = async (contract: SimpleBank) => {
     const rawBalance = await contract.getBalance()
@@ -63,7 +61,7 @@ export const useBalance = (balanceType: BalanceType) => {
 
     // Format ETH balance and parse it to JS number
     const value = parseFloat(ethers.formatEther(rawBalance))
-
+    console.log({ value })
     if (value !== prevBankBalanceRef.current) {
       prevBankBalanceRef.current = value
       setBankBalance(value)
