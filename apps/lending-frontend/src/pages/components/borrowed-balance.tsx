@@ -7,7 +7,7 @@ export const BorrowedBalance = () => {
   return (
     <Flex gap={6} backgroundColor="red.50" p="5" borderRadius="2xl">
       <Text fontSize="2xl" as="b">
-        My borrowed balance:
+        My loan balance:
       </Text>
       <Text fontSize="2xl">{balance ?? "0"} XRP</Text>
     </Flex>

@@ -12,27 +12,35 @@ import {
   InputLeftElement,
   Text,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { SimpleBank__factory } from "../../contracts"
+import SimpleBank from "../../contracts/contract-address.json"
 import { useWeb3 } from "../../shared/contexts"
 
 type LendForm = {
   amount: string
-  borrower: string // an eth address
 }
 
 export const Lend = () => {
   const { register, handleSubmit, watch } = useForm<LendForm>()
   const { currentAccount } = useWeb3()
 
-  const onSubmit: SubmitHandler<LendForm> = async ({ amount, borrower }) => {
-    console.log(amount, borrower)
+  const onSubmit: SubmitHandler<LendForm> = async ({ amount }) => {
+    const provider = new ethers.BrowserProvider(window.ethereum)
+
+    const signer = await provider.getSigner()
+
+    const contract = SimpleBank__factory.connect(SimpleBank.address, signer)
+
+    await contract.loan(ethers.formatEther(amount))
   }
 
   return (
     <Card>
       <CardHeader>
-        <Heading size="md">Lend</Heading>
-        <Text>Send some deposited money to a another address</Text>
+        <Heading size="md">Request Loan</Heading>
+        <Text>Ask for a loan to the bank</Text>
       </CardHeader>
       <CardBody>
         <Image
@@ -52,12 +60,9 @@ export const Lend = () => {
               <Input {...register("amount")} type="number" step=".01" />
             </InputGroup>
           </FormControl>
-          <FormControl mt="4">
-            <FormLabel>Borrower</FormLabel>
-            <Input {...register("borrower")} type="text" />
-          </FormControl>
+
           <Button
-            isDisabled={currentAccount === "" || watch("amount") === "" || watch("borrower") === ""}
+            isDisabled={currentAccount === "" || watch("amount") === ""}
             mt="4"
             size="sm"
             type="submit"

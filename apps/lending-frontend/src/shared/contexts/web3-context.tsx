@@ -1,8 +1,12 @@
+import { ethers } from "ethers"
 import { createContext, useContext, useEffect, useState } from "react"
+import { SimpleBank__factory } from "../../contracts"
+import SimpleBankJson from "../../contracts/contract-address.json"
 
 type Web3ContextApi = {
   connectWallet: () => void
   currentAccount: string
+  owner: string
   // deposit: (amount: string) => void
   // getMyBalance: () => Promise<string | undefined>
   // lend: (amount: string, borrower: string) => Promise<void>
@@ -18,23 +22,44 @@ type Web3ProviderProps = {
 
 export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("")
+  const [owner, setOwner] = useState("")
 
   const checkIfWalletIsConnected = async () => {
     if (!window.ethereum) {
-      return alert("Please install Metamask")
+      alert("Please install Metamask")
+      return false
     }
 
     const accounts = await window.ethereum.request({ method: "eth_accounts" })
 
     if (accounts.length) {
       setCurrentAccount(accounts[0])
+      return true
     } else {
       console.log("No accounts found.")
+      return false
     }
   }
 
+  const getOwnerContract = async () => {
+    if (!window.ethereum) return
+
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+
+    const contract = SimpleBank__factory.connect(SimpleBankJson.address, signer)
+
+    const ownerContract = await contract.owner()
+
+    setOwner(ownerContract)
+  }
+
   useEffect(() => {
-    checkIfWalletIsConnected()
+    checkIfWalletIsConnected().then((isConnected) => {
+      if (isConnected) {
+        getOwnerContract()
+      }
+    })
   }, [])
 
   // Update account address when changing account in metamask
@@ -122,6 +147,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       value={{
         connectWallet,
         currentAccount,
+        owner,
         // deposit,
         // getMyBalance,
         // getMyBorrowedAmount,
