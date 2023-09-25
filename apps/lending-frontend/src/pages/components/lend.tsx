@@ -14,25 +14,28 @@ import {
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { SimpleBank__factory } from "../../contracts"
-import SimpleBank from "../../contracts/contract-address.json"
 import { useWeb3 } from "../../shared/contexts"
+import { useContract } from "../../shared/hooks"
 
 type LendForm = {
   amount: string
 }
 
+/**
+ * Component that allows a user to request a loan from the bank.
+ *
+ * @returns A JSX.Element
+ */
 export const Lend = () => {
   const { register, handleSubmit, watch } = useForm<LendForm>()
-  const { currentAccount } = useWeb3()
+  const contract = useContract()
+  const {
+    state: { isAuthenticated },
+  } = useWeb3()
 
+  // call the contract to issue a loan
   const onSubmit: SubmitHandler<LendForm> = async ({ amount }) => {
-    const provider = new ethers.BrowserProvider(window.ethereum)
-
-    const signer = await provider.getSigner()
-
-    const contract = SimpleBank__factory.connect(SimpleBank.address, signer)
-
+    if (!contract) return
     const convertedAmount = ethers.parseEther(amount)
     await contract.loan(ethers.toBigInt(convertedAmount))
   }
@@ -63,7 +66,7 @@ export const Lend = () => {
           </FormControl>
 
           <Button
-            isDisabled={currentAccount === "" || watch("amount") === ""}
+            isDisabled={!isAuthenticated || watch("amount") === ""}
             mt="4"
             size="sm"
             type="submit"
