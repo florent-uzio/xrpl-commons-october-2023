@@ -13,11 +13,8 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
-import { useCallback } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { SimpleBank__factory } from "../../contracts"
-import SimpleBank from "../../contracts/contract-address.json"
-import { useWeb3 } from "../../shared/contexts"
+import { useContract } from "../../shared/hooks"
 
 type DepositForm = {
   amount: string
@@ -25,19 +22,11 @@ type DepositForm = {
 
 export const Deposit = () => {
   const { register, handleSubmit, watch } = useForm<DepositForm>()
-  const { currentAccount } = useWeb3()
-
-  const deposit = useCallback(async (amount: string) => {
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
-
-    const contract = SimpleBank__factory.connect(SimpleBank.address, signer)
-
-    await contract.deposit({ value: ethers.parseEther(amount) })
-  }, [])
+  const contract = useContract()
 
   const onSubmit: SubmitHandler<DepositForm> = async ({ amount }) => {
-    await deposit(amount)
+    if (!contract) return
+    await contract.deposit({ value: ethers.parseEther(amount) })
   }
 
   return (
@@ -63,12 +52,7 @@ export const Deposit = () => {
               </InputLeftElement>
               <Input {...register("amount")} type="number" step=".01" />
             </InputGroup>
-            <Button
-              isDisabled={currentAccount === "" || watch("amount") === ""}
-              mt="2"
-              size="sm"
-              type="submit"
-            >
+            <Button isDisabled={watch("amount") === ""} mt="2" size="sm" type="submit">
               Deposit
             </Button>
           </FormControl>

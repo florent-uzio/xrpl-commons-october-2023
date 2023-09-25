@@ -8,6 +8,12 @@ contract SimpleBank {
     mapping(address => uint256) public balances;
     mapping(address => uint256) public loans;
 
+     // Events
+    event Deposited(address indexed user, uint256 amount);
+    event Loaned(address indexed user, uint256 amount);
+    event LoanRepaid(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
+
     constructor() {
         owner = msg.sender;
     }
@@ -19,6 +25,7 @@ contract SimpleBank {
 
     function deposit() public payable {
         balances[msg.sender] += msg.value;
+        emit Deposited(msg.sender, msg.value);
     }
 
     function getBalance() public view returns (uint256) {
@@ -32,6 +39,8 @@ contract SimpleBank {
         loans[msg.sender] += amount;
         balances[owner] -= amount;
         payable(msg.sender).transfer(amount);
+
+        emit Loaned(msg.sender, amount);
     }
 
     function repayLoan() public payable {
@@ -40,6 +49,8 @@ contract SimpleBank {
 
         loans[msg.sender] = 0;
         balances[owner] += msg.value;
+
+        emit LoanRepaid(msg.sender, msg.value);
     }
 
     function getLoanAmount() public view returns (uint256) {
@@ -47,7 +58,10 @@ contract SimpleBank {
     }
 
     function withdraw() public onlyOwner {
-        payable(owner).transfer(balances[owner]);
+        uint256 withdrawalAmount = balances[owner];
+        payable(owner).transfer(withdrawalAmount);
+
+        emit Withdrawn(owner, withdrawalAmount);
     }
 
     function getBankBalance() public view onlyOwner returns (uint256) {

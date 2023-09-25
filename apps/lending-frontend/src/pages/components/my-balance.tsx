@@ -1,10 +1,31 @@
 import { Flex, Text } from "@chakra-ui/react"
+import { ethers } from "ethers"
+import { useEffect, useState } from "react"
+import { useContract } from "../../shared/hooks"
 
-type MyBalanceProps = {
-  balance: number
-}
+export const MyBalance = () => {
+  const [balance, setBalance] = useState(0)
+  const contract = useContract()
 
-export const MyBalance = ({ balance }: MyBalanceProps) => {
+  useEffect(() => {
+    const checkBalance = async () => {
+      if (!contract) return
+
+      const rawBalance = await contract.getBalance()
+
+      // Format ETH balance and parse it to JS number
+      const value = parseFloat(ethers.formatEther(rawBalance))
+
+      setBalance(value)
+    }
+
+    const interval = setInterval(() => {
+      checkBalance()
+    }, 2800)
+
+    return () => clearInterval(interval)
+  }, [contract])
+
   return (
     <Flex gap={6} backgroundColor="blue.50" p="5" borderRadius="2xl">
       <Text fontSize="2xl" as="b">
