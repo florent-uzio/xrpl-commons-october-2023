@@ -2,7 +2,7 @@ import { useToast } from "@chakra-ui/react"
 import { BrowserProvider, ethers, JsonRpcSigner } from "ethers"
 import { useCallback, useEffect, useState } from "react"
 
-export interface IWeb3State {
+export type Web3State = {
   address: string | null
   currentChain: number | null
   signer: JsonRpcSigner | null
@@ -20,7 +20,7 @@ export const useWeb3Provider = () => {
   }
 
   const toast = useToast()
-  const [state, setState] = useState<IWeb3State>(initialWeb3State)
+  const [state, setState] = useState<Web3State>(initialWeb3State)
 
   const connectWallet = useCallback(async () => {
     if (state.isAuthenticated) return
