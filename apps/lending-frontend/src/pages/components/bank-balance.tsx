@@ -1,9 +1,11 @@
 import { Flex, Text } from "@chakra-ui/react"
 import { useWeb3 } from "../../shared/contexts"
-import { useBalance } from "../../shared/hooks"
 
-export const BankBalance = () => {
-  const { bankBalance } = useBalance()
+type BankBalanceProps = {
+  balance: number
+}
+
+export const BankBalance = ({ balance }: BankBalanceProps) => {
   const { isOwner } = useWeb3()
 
   return (
@@ -11,7 +13,7 @@ export const BankBalance = () => {
       <Text fontSize="2xl" as="b">
         Bank balance:
       </Text>
-      <Text fontSize="2xl">{isOwner ? `${bankBalance} XRP` : "You are not the bank"}</Text>
+      <Text fontSize="2xl">{isOwner ? `${balance} XRP` : "You are not the bank"}</Text>
     </Flex>
   )
 }

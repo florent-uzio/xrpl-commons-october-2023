@@ -17,27 +17,25 @@ export const useBalance = () => {
   const prevBalanceRef = useRef(0)
   const prevBankBalanceRef = useRef(0)
   const prevLoanBalanceRef = useRef(0)
-  const { owner, currentAccount } = useWeb3()
+  const { isOwner } = useWeb3()
 
   const fetchBalance = useCallback(async () => {
     // Signer represents ethereum wallet in ethers.js. You cannot just send
     // transactions with only provider, you will need signer (wallet) for this.
     const signer = await provider.getSigner()
-    // Connected metamask address
-    const address = await signer.getAddress()
 
     const contract = SimpleBank__factory.connect(SimpleBankJson.address, signer)
 
-    await getMyBalance(contract)
+    getMyBalance(contract)
 
-    if (owner === address) {
-      await getBankBalance(contract)
+    if (isOwner) {
+      getBankBalance(contract)
     }
 
-    await getLoanBalance(contract)
-  }, [currentAccount, owner])
+    getLoanBalance(contract)
+  }, [isOwner])
 
-  const getMyBalance = async (contract: SimpleBank) => {
+  const getMyBalance = useCallback(async (contract: SimpleBank) => {
     const rawBalance = await contract.getBalance()
 
     // Format ETH balance and parse it to JS number
@@ -47,9 +45,9 @@ export const useBalance = () => {
       prevBalanceRef.current = value
       setBalance(value)
     }
-  }
+  }, [])
 
-  const getLoanBalance = async (contract: SimpleBank) => {
+  const getLoanBalance = useCallback(async (contract: SimpleBank) => {
     const rawBalance = await contract.getLoanAmount()
 
     // Format ETH balance and parse it to JS number
@@ -59,9 +57,9 @@ export const useBalance = () => {
       prevLoanBalanceRef.current = value
       setLoanBalance(value)
     }
-  }
+  }, [])
 
-  const getBankBalance = async (contract: SimpleBank) => {
+  const getBankBalance = useCallback(async (contract: SimpleBank) => {
     const rawBalance = await contract.getBankBalance()
 
     // Format ETH balance and parse it to JS number
@@ -71,13 +69,12 @@ export const useBalance = () => {
       prevBankBalanceRef.current = value
       setBankBalance(value)
     }
-  }
+  }, [])
 
   useEffect(() => {
+    // Call the function initially
     fetchBalance()
-  }, [fetchBalance])
 
-  useEffect(() => {
     // Fetch user balance on each block
     provider.on("block", fetchBalance)
 

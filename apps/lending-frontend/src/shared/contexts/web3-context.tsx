@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { SimpleBank__factory } from "../../contracts"
 import SimpleBankJson from "../../contracts/contract-address.json"
 
@@ -38,7 +38,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     }
   }
 
-  const getOwnerContract = async () => {
+  const getOwnerContract = useCallback(async () => {
     if (!window.ethereum) return
 
     const provider = new ethers.BrowserProvider(window.ethereum)
@@ -56,7 +56,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     }
 
     setOwner(ownerContract)
-  }
+  }, [])
 
   useEffect(() => {
     checkIfWalletIsConnected().then((isConnected) => {
@@ -71,7 +71,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     setCurrentAccount(accounts[0])
   })
 
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     if (!window.ethereum) {
       return alert("Please install Metamask")
     }
@@ -83,7 +83,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     setCurrentAccount(accounts[0])
 
     window.location.reload()
-  }
+  }, [])
 
   // const deposit = async (amount: string) => {
   //   if (!window.ethereum) return
