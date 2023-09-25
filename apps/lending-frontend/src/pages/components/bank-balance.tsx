@@ -4,6 +4,9 @@ import { useEffect, useState } from "react"
 import { useWeb3 } from "../../shared/contexts"
 import { useContract } from "../../shared/hooks"
 
+/**
+ * Component that renders a simple Text to indicate the bank balance inside the contract.
+ */
 export const BankBalance = () => {
   const [isOwner, setIsOwner] = useState(false)
   const [balance, setBalance] = useState(0)
@@ -13,6 +16,7 @@ export const BankBalance = () => {
   } = useWeb3()
 
   useEffect(() => {
+    // check if the address connected on Metamask is the address that deployed the contract
     const checkOwnership = async () => {
       if (!contract) return
 

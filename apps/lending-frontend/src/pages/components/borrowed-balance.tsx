@@ -3,6 +3,9 @@ import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 import { useContract } from "../../shared/hooks"
 
+/**
+ * Component that renders a simple Text to indicate the amount of XRP borrowed from the bank.
+ */
 export const BorrowedBalance = () => {
   const [balance, setBalance] = useState(0)
   const contract = useContract()
@@ -19,6 +22,7 @@ export const BorrowedBalance = () => {
       setBalance(value)
     }
 
+    // check the balance regularly
     const interval = setInterval(() => {
       checkBalance()
     }, 2900)
