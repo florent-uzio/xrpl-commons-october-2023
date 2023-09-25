@@ -16,26 +16,12 @@ export const BankBalance = () => {
   } = useWeb3()
 
   useEffect(() => {
-    // check if the address connected on Metamask is the address that deployed the contract
-    const checkOwnership = async () => {
-      if (!contract) return
-
-      const owner = await contract.owner()
-
-      if (owner === signer?.address) {
-        setIsOwner(true)
-      } else {
-        setIsOwner(false)
-      }
+    if (!contract) {
+      setBalance(0)
+      return
     }
 
-    checkOwnership()
-  }, [contract])
-
-  useEffect(() => {
     const checkBalance = async () => {
-      if (!contract) return
-
       const rawBalance = await contract.getBankBalance()
 
       // Format ETH balance and parse it to JS number
@@ -44,6 +30,24 @@ export const BankBalance = () => {
       setBalance(value)
     }
 
+    // check if the address connected on Metamask is the address that deployed the contract
+    const checkOwnership = async () => {
+      const owner = await contract.owner()
+
+      if (owner === signer?.address) {
+        setIsOwner(true)
+
+        // initially check the balance if the connected address is the one that deployed the contract
+        checkBalance()
+      } else {
+        setIsOwner(false)
+      }
+    }
+
+    // Initial check if the connected metamask account is the one that deployed the contract
+    checkOwnership()
+
+    // check the balance regularly if it's the address that deployed the contract
     const interval = setInterval(() => {
       if (isOwner) {
         checkBalance()

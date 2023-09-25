@@ -9,7 +9,10 @@ export const MyBalance = () => {
 
   useEffect(() => {
     const checkBalance = async () => {
-      if (!contract) return
+      if (!contract) {
+        setBalance(0)
+        return
+      }
 
       const rawBalance = await contract.getBalance()
 
@@ -19,6 +22,10 @@ export const MyBalance = () => {
       setBalance(value)
     }
 
+    // initially get the balance
+    checkBalance()
+
+    // then regularly check the balance
     const interval = setInterval(() => {
       checkBalance()
     }, 2800)

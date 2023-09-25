@@ -9,22 +9,21 @@ export type Web3State = {
   provider: BrowserProvider | null
   isAuthenticated: boolean
 }
+const initialWeb3State = {
+  address: null,
+  currentChain: null,
+  signer: null,
+  provider: null,
+  isAuthenticated: false,
+}
 
 export const useWeb3State = () => {
-  const initialWeb3State = {
-    address: null,
-    currentChain: null,
-    signer: null,
-    provider: null,
-    isAuthenticated: false,
-  }
-
   const toast = useToast()
   const [state, setState] = useState<Web3State>(initialWeb3State)
 
   const connectWallet = useCallback(async () => {
     if (state.isAuthenticated) return
-
+    console.log("Con")
     try {
       const { ethereum } = window
 
@@ -37,12 +36,12 @@ export const useWeb3State = () => {
       }
 
       const provider = new ethers.BrowserProvider(ethereum)
-      const accounts: string[] = await ethereum.request({ method: "eth_accounts" }) // await provider.send("eth_accounts", [])
+      // https://docs.metamask.io/wallet/reference/rpc-api/
+      const accounts: string[] = await ethereum.request({ method: "eth_requestAccounts" })
 
       if (accounts.length > 0) {
         const signer = await provider.getSigner()
         const chain = Number((await provider.getNetwork()).chainId)
-
         setState({
           ...state,
           address: accounts[0],
@@ -58,6 +57,10 @@ export const useWeb3State = () => {
       console.log(err)
     }
   }, [state, toast])
+
+  // const updateConnectionInfo = useCallback(() => {
+
+  // }, [])
 
   const disconnect = () => {
     setState(initialWeb3State)
@@ -75,12 +78,12 @@ export const useWeb3State = () => {
   useEffect(() => {
     if (typeof window.ethereum === "undefined") return
 
-    window.ethereum.on("accountsChanged", (accounts: string[]) => {
-      setState({ ...state, address: accounts[0] })
+    window.ethereum.on("accountsChanged", async (accounts: string[]) => {
+      setState((current) => ({ ...current, address: accounts[0], isAuthenticated: false }))
     })
 
     window.ethereum.on("chainChanged", (network: string) => {
-      setState({ ...state, currentChain: Number(network) })
+      setState((current) => ({ ...current, currentChain: Number(network), isAuthenticated: false }))
     })
 
     return () => {

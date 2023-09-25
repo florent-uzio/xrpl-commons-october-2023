@@ -12,7 +12,10 @@ export const BorrowedBalance = () => {
 
   useEffect(() => {
     const checkBalance = async () => {
-      if (!contract) return
+      if (!contract) {
+        setBalance(0)
+        return
+      }
 
       const rawBalance = await contract.getLoanAmount()
 
@@ -21,6 +24,9 @@ export const BorrowedBalance = () => {
 
       setBalance(value)
     }
+
+    // chech the balance initially
+    checkBalance()
 
     // check the balance regularly
     const interval = setInterval(() => {
