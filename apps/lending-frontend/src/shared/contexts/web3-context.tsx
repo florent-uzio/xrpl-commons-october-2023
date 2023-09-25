@@ -1,6 +1,6 @@
 import { ToastId } from "@chakra-ui/react"
 import { createContext, FC, ReactNode, useContext } from "react"
-import { useWeb3Provider, Web3State } from "../hooks"
+import { useWeb3State, Web3State } from "../hooks"
 
 export type Web3ContextApi = {
   connectWallet: () => Promise<ToastId | undefined>
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const Web3Provider: FC<Props> = ({ children }) => {
-  const { connectWallet, disconnect, state } = useWeb3Provider()
+  const { connectWallet, disconnect, state } = useWeb3State()
 
   return (
     <Web3Context.Provider

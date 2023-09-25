@@ -10,7 +10,7 @@ export type Web3State = {
   isAuthenticated: boolean
 }
 
-export const useWeb3Provider = () => {
+export const useWeb3State = () => {
   const initialWeb3State = {
     address: null,
     currentChain: null,
