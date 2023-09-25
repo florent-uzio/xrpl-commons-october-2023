@@ -11,9 +11,12 @@ import {
   InputGroup,
   InputLeftElement,
   Text,
+  useToast,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
+import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { TypedListener } from "../../contracts/common"
 import { useWeb3 } from "../../shared/contexts"
 import { useContract } from "../../shared/hooks"
 
@@ -30,12 +33,34 @@ export const Repay = () => {
   const {
     state: { isAuthenticated },
   } = useWeb3()
+  const toast = useToast()
 
   // call the contract to repay the loan
   const onSubmit: SubmitHandler<RepayForm> = async ({ amount }) => {
     if (!contract) return
     await contract.repayLoan({ value: ethers.parseEther(amount) })
   }
+
+  useEffect(() => {
+    if (!contract) return
+    const event = contract.getEvent("LoanRepaid")
+
+    const showToast: TypedListener<typeof event> = (user, amount) => {
+      toast({
+        title: "Loan Repaid Successfully",
+        description: `${ethers.formatUnits(amount.toString(), "ether")} XRP repaid to ${user}`,
+        status: "success",
+        isClosable: true,
+      })
+    }
+
+    // show a toast upon receipt of the Deposited event
+    contract.on(event, showToast)
+
+    return () => {
+      contract.removeListener(event, showToast)
+    }
+  }, [contract])
 
   return (
     <Card>

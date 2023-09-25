@@ -11,9 +11,12 @@ import {
   InputGroup,
   InputLeftElement,
   Text,
+  useToast,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
+import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { TypedListener } from "../../contracts/common"
 import { useWeb3 } from "../../shared/contexts"
 import { useContract } from "../../shared/hooks"
 
@@ -32,6 +35,7 @@ export const Lend = () => {
   const {
     state: { isAuthenticated },
   } = useWeb3()
+  const toast = useToast()
 
   // call the contract to issue a loan
   const onSubmit: SubmitHandler<LendForm> = async ({ amount }) => {
@@ -39,6 +43,27 @@ export const Lend = () => {
     const convertedAmount = ethers.parseEther(amount)
     await contract.loan(ethers.toBigInt(convertedAmount))
   }
+
+  useEffect(() => {
+    if (!contract) return
+    const event = contract.getEvent("Loaned")
+
+    const showToast: TypedListener<typeof event> = (user, amount) => {
+      toast({
+        title: "Loan Issued Successfully",
+        description: `${ethers.formatUnits(amount.toString(), "ether")} XRP borrowed to ${user}`,
+        status: "success",
+        isClosable: true,
+      })
+    }
+
+    // show a toast upon receipt of the Deposited event
+    contract.on(event, showToast)
+
+    return () => {
+      contract.removeListener(event, showToast)
+    }
+  }, [contract])
 
   return (
     <Card>
