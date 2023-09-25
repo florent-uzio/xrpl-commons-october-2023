@@ -1,7 +1,9 @@
 {
   "name": "hardhat-project",
   "scripts": {
-    "deploy-contract": "npx hardhat run scripts/deploy.ts --network xrpl"
+    "compile": "hardhat typechain",
+    "predeploy": "npm run compile",
+    "deploy": "hardhat run scripts/deploy.ts --network xrpl"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",

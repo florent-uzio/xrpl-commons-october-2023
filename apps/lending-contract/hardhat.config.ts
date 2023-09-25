@@ -1,4 +1,5 @@
 import "@nomicfoundation/hardhat-toolbox"
+import "@typechain/hardhat"
 import "dotenv/config"
 import { HardhatUserConfig } from "hardhat/config"
 

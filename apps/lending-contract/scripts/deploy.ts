@@ -9,7 +9,7 @@ async function main() {
 
   console.log(`SimpleBank deployed to ${contract.target}`)
 
-  // We also save the contract's artifacts and address in the frontend directory
+  // We also save the contract details in the frontend directory
   saveFrontendFiles(contract)
 }
 
