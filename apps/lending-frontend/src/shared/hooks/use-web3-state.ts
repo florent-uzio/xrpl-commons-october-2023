@@ -20,10 +20,11 @@ const initialWeb3State = {
 export const useWeb3State = () => {
   const toast = useToast()
   const [state, setState] = useState<Web3State>(initialWeb3State)
+  const { isAuthenticated } = state
 
   const connectWallet = useCallback(async () => {
-    if (state.isAuthenticated) return
-    console.log("Con")
+    if (isAuthenticated) return
+
     try {
       const { ethereum } = window
 
@@ -42,38 +43,34 @@ export const useWeb3State = () => {
       if (accounts.length > 0) {
         const signer = await provider.getSigner()
         const chain = Number((await provider.getNetwork()).chainId)
-        setState({
+        setState((state) => ({
           ...state,
           address: accounts[0],
           signer,
           currentChain: chain,
           provider,
           isAuthenticated: true,
-        })
+        }))
 
         localStorage.setItem("isAuthenticated", "true")
       }
     } catch (err) {
       console.log(err)
     }
-  }, [state, toast])
+  }, [isAuthenticated])
 
-  // const updateConnectionInfo = useCallback(() => {
-
-  // }, [])
-
-  const disconnect = () => {
+  const disconnect = useCallback(() => {
     setState(initialWeb3State)
     localStorage.removeItem("isAuthenticated")
-  }
+  }, [])
 
   useEffect(() => {
-    if (window == null) return
+    if (window === null) return
 
-    if (localStorage.hasOwnProperty("isAuthenticated")) {
+    if (!!localStorage.getItem("isAuthenticated")) {
       connectWallet()
     }
-  }, [connectWallet, state.isAuthenticated])
+  }, [connectWallet])
 
   useEffect(() => {
     if (typeof window.ethereum === "undefined") return

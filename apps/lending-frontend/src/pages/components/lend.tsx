@@ -48,7 +48,7 @@ export const Lend = () => {
     if (!contract) return
     const event = contract.getEvent("Loaned")
 
-    const showToast: TypedListener<typeof event> = (user, amount) => {
+    const showToast: TypedListener<typeof event> = async (user, amount) => {
       toast({
         title: "Loan Issued Successfully",
         description: `${ethers.formatUnits(amount.toString(), "ether")} XRP borrowed to ${user}`,
@@ -61,7 +61,7 @@ export const Lend = () => {
     contract.on(event, showToast)
 
     return () => {
-      contract.removeListener(event, showToast)
+      contract.off(event, showToast)
     }
   }, [contract])
 

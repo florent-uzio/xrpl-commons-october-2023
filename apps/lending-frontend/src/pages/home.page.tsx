@@ -11,7 +11,7 @@ export const HomePage = () => {
           <MyBalance />
           <BorrowedBalance />
         </Flex>
-        <Flex gap={3}>
+        <Flex gap={4}>
           <Deposit />
           <Lend />
           <Repay />

@@ -44,7 +44,7 @@ export const Deposit = () => {
     if (!contract) return
     const event = contract.getEvent("Deposited")
 
-    const showToast: TypedListener<typeof event> = (user, amount) => {
+    const showToast: TypedListener<typeof event> = async (user, amount) => {
       toast({
         title: "Deposit Successful",
         description: `${ethers.formatUnits(amount.toString(), "ether")} XRP deposited by ${user}`,
@@ -57,7 +57,7 @@ export const Deposit = () => {
     contract.on(event, showToast)
 
     return () => {
-      contract.removeListener(event, showToast)
+      contract.off(event, showToast)
     }
   }, [contract])
 

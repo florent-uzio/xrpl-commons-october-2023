@@ -45,7 +45,7 @@ export const Repay = () => {
     if (!contract) return
     const event = contract.getEvent("LoanRepaid")
 
-    const showToast: TypedListener<typeof event> = (user, amount) => {
+    const showToast: TypedListener<typeof event> = async (user, amount) => {
       toast({
         title: "Loan Repaid Successfully",
         description: `${ethers.formatUnits(amount.toString(), "ether")} XRP repaid to ${user}`,
@@ -58,7 +58,7 @@ export const Repay = () => {
     contract.on(event, showToast)
 
     return () => {
-      contract.removeListener(event, showToast)
+      contract.off(event, showToast)
     }
   }, [contract])
 
