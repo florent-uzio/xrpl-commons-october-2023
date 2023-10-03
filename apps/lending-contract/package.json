@@ -1,0 +1,15 @@
+{
+  "name": "hardhat-project",
+  "scripts": {
+    "compile": "hardhat typechain",
+    "predeploy": "npm run compile",
+    "deploy": "hardhat run scripts/deploy.ts --network xrpl"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}
