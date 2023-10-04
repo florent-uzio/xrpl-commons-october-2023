@@ -2,7 +2,6 @@ import { Flex, Text } from "@chakra-ui/react"
 import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "../../shared/contexts"
-import { useContract } from "../../shared/hooks"
 
 /**
  * Component that renders a simple Text to indicate the bank balance inside the contract.
@@ -10,10 +9,7 @@ import { useContract } from "../../shared/hooks"
 export const BankBalance = () => {
   const [isOwner, setIsOwner] = useState(false)
   const [balance, setBalance] = useState(0)
-  const contract = useContract()
-  const {
-    state: { signer },
-  } = useWeb3()
+  const { signer, contract } = useWeb3()
 
   useEffect(() => {
     if (!contract) {

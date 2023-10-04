@@ -11,13 +11,10 @@ import {
   InputGroup,
   InputLeftElement,
   Text,
-  useToast,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
-import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { TypedListener } from "../../contracts/common"
-import { useContract } from "../../shared/hooks"
+import { useWeb3 } from "../../shared/contexts"
 
 type DepositForm = {
   amount: string
@@ -29,37 +26,15 @@ type DepositForm = {
  * @returns
  */
 export const Deposit = () => {
-  const { register, handleSubmit, watch } = useForm<DepositForm>()
-  // get the contract
-  const contract = useContract()
-  const toast = useToast()
+  const { register, handleSubmit } = useForm<DepositForm>()
 
-  // what happens when you click on the button
+  // get the contract
+  const { contract } = useWeb3()
+
   const onSubmit: SubmitHandler<DepositForm> = async ({ amount }) => {
     if (!contract) return
     await contract.deposit({ value: ethers.parseEther(amount) })
   }
-
-  useEffect(() => {
-    if (!contract) return
-    const event = contract.getEvent("Deposited")
-
-    const showToast: TypedListener<typeof event> = async (user, amount) => {
-      toast({
-        title: "Deposit Successful",
-        description: `${ethers.formatUnits(amount.toString(), "ether")} XRP deposited by ${user}`,
-        status: "success",
-        isClosable: true,
-      })
-    }
-
-    // show a toast upon receipt of the Deposited event
-    contract.on(event, showToast)
-
-    return () => {
-      contract.off(event, showToast)
-    }
-  }, [contract])
 
   return (
     <Card>
@@ -84,7 +59,7 @@ export const Deposit = () => {
               </InputLeftElement>
               <Input {...register("amount")} type="number" step=".01" />
             </InputGroup>
-            <Button isDisabled={watch("amount") === ""} mt="2" size="sm" type="submit">
+            <Button mt="2" size="sm" type="submit">
               Deposit
             </Button>
           </FormControl>

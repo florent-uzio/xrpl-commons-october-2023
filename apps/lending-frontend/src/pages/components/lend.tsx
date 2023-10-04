@@ -11,14 +11,10 @@ import {
   InputGroup,
   InputLeftElement,
   Text,
-  useToast,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
-import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { TypedListener } from "../../contracts/common"
 import { useWeb3 } from "../../shared/contexts"
-import { useContract } from "../../shared/hooks"
 
 type LendForm = {
   amount: string
@@ -30,12 +26,8 @@ type LendForm = {
  * @returns A JSX.Element
  */
 export const Lend = () => {
-  const { register, handleSubmit, watch } = useForm<LendForm>()
-  const contract = useContract()
-  const {
-    state: { isAuthenticated },
-  } = useWeb3()
-  const toast = useToast()
+  const { register, handleSubmit } = useForm<LendForm>()
+  const { contract } = useWeb3()
 
   // call the contract to issue a loan
   const onSubmit: SubmitHandler<LendForm> = async ({ amount }) => {
@@ -43,27 +35,6 @@ export const Lend = () => {
     const convertedAmount = ethers.parseEther(amount)
     await contract.loan(ethers.toBigInt(convertedAmount))
   }
-
-  useEffect(() => {
-    if (!contract) return
-    const event = contract.getEvent("Loaned")
-
-    const showToast: TypedListener<typeof event> = async (user, amount) => {
-      toast({
-        title: "Loan Issued Successfully",
-        description: `${ethers.formatUnits(amount.toString(), "ether")} XRP borrowed to ${user}`,
-        status: "success",
-        isClosable: true,
-      })
-    }
-
-    // show a toast upon receipt of the Deposited event
-    contract.on(event, showToast)
-
-    return () => {
-      contract.off(event, showToast)
-    }
-  }, [contract])
 
   return (
     <Card>
@@ -90,12 +61,7 @@ export const Lend = () => {
             </InputGroup>
           </FormControl>
 
-          <Button
-            isDisabled={!isAuthenticated || watch("amount") === ""}
-            mt="4"
-            size="sm"
-            type="submit"
-          >
+          <Button mt="4" size="sm" type="submit">
             Send
           </Button>
         </form>

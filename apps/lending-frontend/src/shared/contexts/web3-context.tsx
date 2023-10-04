@@ -1,11 +1,14 @@
-import { ToastId } from "@chakra-ui/react"
-import { createContext, FC, ReactNode, useContext } from "react"
-import { useWeb3State, Web3State } from "../hooks"
+import { ethers, JsonRpcSigner } from "ethers"
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react"
+import { SimpleBank, SimpleBank__factory } from "../../contracts"
+import SimpleBankJson from "../../contracts/contract-address.json"
 
 export type Web3ContextApi = {
-  connectWallet: () => Promise<ToastId | undefined>
+  account: string
+  connectWallet: () => void
+  contract: SimpleBank | null
   disconnect: () => void
-  state: Web3State
+  signer: JsonRpcSigner | null
 }
 
 const Web3Context = createContext<Web3ContextApi | null>(null)
@@ -15,19 +18,55 @@ type Props = {
 }
 
 export const Web3Provider: FC<Props> = ({ children }) => {
-  const { connectWallet, disconnect, state } = useWeb3State()
+  const [account, setAccount] = useState("")
+  const [contract, setContract] = useState<SimpleBank | null>(null)
+  const [signer, setSigner] = useState<JsonRpcSigner | null>(null)
 
-  return (
-    <Web3Context.Provider
-      value={{
-        connectWallet,
-        disconnect,
-        state,
-      }}
-    >
-      {children}
-    </Web3Context.Provider>
-  )
+  const { ethereum } = window
+
+  const connectWallet = async () => {
+    if (!ethereum) {
+      console.error("MetaMask is not installed")
+    }
+
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+    setSigner(signer)
+
+    // Connect to MetaMask
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+    const address = accounts[0]
+    setAccount(address)
+
+    // Set the contract using the signer
+    const contractInstance = SimpleBank__factory.connect(SimpleBankJson.address, signer)
+    setContract(contractInstance)
+  }
+
+  const disconnect = () => {
+    setAccount("")
+    setSigner(null)
+    setContract(null)
+  }
+
+  useEffect(() => {
+    if (ethereum) {
+      ethereum.on("accountsChanged", () => {
+        disconnect()
+        connectWallet()
+      })
+    }
+  }, [ethereum])
+
+  const value = {
+    account,
+    connectWallet,
+    contract,
+    disconnect,
+    signer,
+  }
+
+  return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
 }
 
 export const useWeb3 = () => {

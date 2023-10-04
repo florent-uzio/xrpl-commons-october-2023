@@ -1,7 +1,20 @@
-import { Container, Flex, Heading } from "@chakra-ui/react"
+import { Container, Flex, Heading, Text } from "@chakra-ui/react"
+import { useWeb3 } from "../shared/contexts"
 import { BankBalance, BorrowedBalance, Deposit, Lend, MyBalance, Repay } from "./components"
 
 export const HomePage = () => {
+  const { contract } = useWeb3()
+
+  if (!contract) {
+    return (
+      <Container>
+        <Flex py="20" gap="8" justifyContent="center" alignItems="center">
+          <Text>Connect Metamask</Text>
+        </Flex>
+      </Container>
+    )
+  }
+
   return (
     <Container>
       <Flex direction="column" py="20" gap="8" justifyContent="center" alignItems="center">
