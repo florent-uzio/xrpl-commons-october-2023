@@ -1,14 +1,14 @@
 import { Flex, Text } from "@chakra-ui/react"
 import { ethers } from "ethers"
 import { useEffect, useState } from "react"
-import { useContract } from "../../shared/hooks"
+import { useWeb3 } from "../../shared/contexts"
 
 /**
  * Component that renders a simple Text to indicate the amount of XRP borrowed from the bank.
  */
 export const BorrowedBalance = () => {
   const [balance, setBalance] = useState(0)
-  const contract = useContract()
+  const { contract } = useWeb3()
 
   useEffect(() => {
     const checkBalance = async () => {

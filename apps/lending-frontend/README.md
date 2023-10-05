@@ -2,7 +2,9 @@
 
 This repo runs using Vite.
 
-Install the dependencies.
-At the root directory of this monorepo, run `npm install`.
+Deploy the contract in the `lending-contract` app.
 
-Then cd into this repo `cd apps/lending-ui` and run `npm run dev`.
+At the root directory of this monorepo, run
+
+1. `npm install`
+2. `npm run dev`

@@ -11,14 +11,10 @@ import {
   InputGroup,
   InputLeftElement,
   Text,
-  useToast,
 } from "@chakra-ui/react"
 import { ethers } from "ethers"
-import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { TypedListener } from "../../contracts/common"
 import { useWeb3 } from "../../shared/contexts"
-import { useContract } from "../../shared/hooks"
 
 type RepayForm = {
   amount: string
@@ -28,39 +24,14 @@ type RepayForm = {
  * Component to allow the user to repay his entier loan.
  */
 export const Repay = () => {
-  const { register, handleSubmit, watch } = useForm<RepayForm>()
-  const contract = useContract()
-  const {
-    state: { isAuthenticated },
-  } = useWeb3()
-  const toast = useToast()
+  const { register, handleSubmit } = useForm<RepayForm>()
+  const { contract } = useWeb3()
 
   // call the contract to repay the loan
   const onSubmit: SubmitHandler<RepayForm> = async ({ amount }) => {
     if (!contract) return
     await contract.repayLoan({ value: ethers.parseEther(amount) })
   }
-
-  useEffect(() => {
-    if (!contract) return
-    const event = contract.getEvent("LoanRepaid")
-
-    const showToast: TypedListener<typeof event> = async (user, amount) => {
-      toast({
-        title: "Loan Repaid Successfully",
-        description: `${ethers.formatUnits(amount.toString(), "ether")} XRP repaid to ${user}`,
-        status: "success",
-        isClosable: true,
-      })
-    }
-
-    // show a toast upon receipt of the Deposited event
-    contract.on(event, showToast)
-
-    return () => {
-      contract.off(event, showToast)
-    }
-  }, [contract])
 
   return (
     <Card>
@@ -88,7 +59,7 @@ export const Repay = () => {
           </FormControl>
 
           <Button
-            isDisabled={!isAuthenticated || watch("amount") === ""}
+            //isDisabled={!isAuthenticated || watch("amount") === ""}
             mt="4"
             size="sm"
             type="submit"

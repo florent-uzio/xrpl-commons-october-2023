@@ -3,11 +3,7 @@ import XrplLogo from "../assets/xrpl-logo.svg"
 import { useWeb3 } from "../shared/contexts"
 
 export const Header = () => {
-  const {
-    connectWallet,
-    disconnect,
-    state: { isAuthenticated, address },
-  } = useWeb3()
+  const { connectWallet, disconnect, account } = useWeb3()
 
   const onConnectHandler = () => {
     connectWallet()
@@ -16,6 +12,8 @@ export const Header = () => {
   const onDisconnectHandler = () => {
     disconnect()
   }
+
+  const isAuthenticated = account !== ""
 
   return (
     <Flex justifyContent="space-between" p="5" alignItems="center" shadow="lg">
@@ -26,7 +24,7 @@ export const Header = () => {
         </Button>
       ) : (
         <Flex alignItems="center" gap={3}>
-          <Tag size="lg">{address}</Tag>
+          <Tag size="lg">{account}</Tag>
           <Button size="xs" onClick={onDisconnectHandler} variant="outline">
             Disconnect Wallet
           </Button>
