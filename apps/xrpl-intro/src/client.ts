@@ -1,4 +1,6 @@
-import { Client } from "xrpl"
+// todo: prepare and export the client
+
+// import { Client } from "xrpl"
 
 // https://xrpl.org/public-servers.html
 const networks = {
@@ -7,13 +9,7 @@ const networks = {
   RIPPLE_AMM_DEVNET: "wss://amm.devnet.rippletest.net:51233/",
 }
 
-let xrplClient: Client
-
 // Initialize the client if it doesn't exist or return it.
 export const getXrplClient = () => {
-  if (!xrplClient) {
-    xrplClient = new Client(networks.RIPPLE_TESTNET)
-    return xrplClient
-  }
-  return xrplClient
+  // todo: write the content of this function after initializing a Client variable (le)
 }
