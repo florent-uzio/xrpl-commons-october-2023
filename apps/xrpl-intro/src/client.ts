@@ -12,5 +12,5 @@ const networks = {
 
 // Initialize the client if it doesn't exist or return it.
 export const getXrplClient = () => {
-  // todo: write the content of this function after initializing a Client variable (le)
+  // todo: write the content of this function after initializing a Client variable above this function (let)
 }
