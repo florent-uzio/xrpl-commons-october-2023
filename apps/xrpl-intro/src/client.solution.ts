@@ -18,7 +18,7 @@ let xrplClient: Client
  * @returns A {@link Client}
  */
 export const getXrplClient = () => {
-  // todo: write the code to create and return the XRPL client
+  // todo: write the content of this function after initializing a Client variable above this function (let)
   if (!xrplClient) {
     xrplClient = new Client(networks.RIPPLE_TESTNET)
   }
@@ -33,5 +33,12 @@ let pinataClient: PinataClient
  * @returns A {@link PinataClient}
  */
 export const getPinataClient = () => {
-  // todo: write the code to create and return the Pinata client
+  if (!pinataClient) {
+    const apiKey = process.env.PINATA_API_KEY
+    const secretApiKey = process.env.PINATA_SECRET_API_KEY
+
+    pinataClient = new PinataClient(apiKey, secretApiKey)
+  }
+
+  return pinataClient
 }
