@@ -7,7 +7,7 @@ const client = getXrplClient()
 export const mintNft = async ({
   wallet,
   txn,
-  showLogs,
+  showLogs = true,
 }: TransactionPropsForSingleSign<NFTokenMint>) => {
   console.log("LET'S MINT AN NFT")
 

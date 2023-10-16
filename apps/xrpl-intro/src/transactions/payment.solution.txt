@@ -15,7 +15,7 @@ export const sendPayment = async (props: SendPaymentProps) => {
     // Handle the multi-sign scenario
   } else {
     let { Amount, ...rest } = props.txn
-    const { wallet, showLogs } = props
+    const { wallet, showLogs = true } = props
 
     // Convert the amount to drops (1 drop = .000001 XRP)
     if (typeof Amount === "string") {
