@@ -1,0 +1,36 @@
+import { NFTokenCancelOffer } from "xrpl"
+import { getXrplClient } from "../../client"
+import { TransactionPropsForSingleSign } from "../../models"
+
+const client = getXrplClient()
+
+/**
+ * Cancel an existing NFT offer.
+ * @returns A TxResponse<NFTokenCancelOffer>
+ */
+export const cancelOffer = async ({
+  txn,
+  wallet,
+  showLogs,
+}: TransactionPropsForSingleSign<NFTokenCancelOffer>) => {
+  console.log("******* LET'S CANCEL AN NFT OFFER *******")
+  console.log()
+
+  // Construct the base transaction
+  const transaction: NFTokenCancelOffer = {
+    Account: wallet.address,
+    TransactionType: "NFTokenCancelOffer",
+    ...txn,
+  }
+
+  const response = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  if (showLogs) {
+    console.log(response)
+  }
+
+  return response
+}
