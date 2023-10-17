@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "five-bells-condition": "^5.0.1",
     "xrpl": "^2.12.0"
   },
   "devDependencies": {
