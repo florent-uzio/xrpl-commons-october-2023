@@ -1,7 +1,7 @@
 import color from "colors"
 import { EscrowCreate } from "xrpl"
-import { getXrplClient } from "../client"
-import { TransactionPropsForSingleSign } from "../models"
+import { getXrplClient } from "../../client"
+import { TransactionPropsForSingleSign } from "../../models"
 
 const client = getXrplClient()
 
