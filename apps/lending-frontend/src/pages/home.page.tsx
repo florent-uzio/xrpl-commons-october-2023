@@ -1,6 +1,6 @@
 import { Container, Flex, Heading, Text } from "@chakra-ui/react"
 import { useWeb3 } from "../shared/contexts"
-import { BankBalance, BorrowedBalance, Deposit, Lend, MyBalance, Repay } from "./components"
+import { BankBalance, BorrowedBalance, Deposit, Lend, Repay } from "./components"
 
 export const HomePage = () => {
   const { contract } = useWeb3()
@@ -21,7 +21,6 @@ export const HomePage = () => {
         <Heading size="xl">Lend and Repay</Heading>
         <Flex gap={4}>
           <BankBalance />
-          <MyBalance />
           <BorrowedBalance />
         </Flex>
         <Flex gap={4}>

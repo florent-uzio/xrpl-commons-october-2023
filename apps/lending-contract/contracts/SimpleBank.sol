@@ -23,7 +23,7 @@ contract SimpleBank {
         _;
     }
 
-    function deposit() public payable {
+    function deposit() public onlyOwner payable {
         balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }
