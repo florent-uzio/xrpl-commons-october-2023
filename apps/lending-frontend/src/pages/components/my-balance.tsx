@@ -3,6 +3,9 @@ import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "../../shared/contexts"
 
+/**
+ * Ignore, component not used anymore!!
+ */
 export const MyBalance = () => {
   const [balance, setBalance] = useState(0)
   const { contract } = useWeb3()
