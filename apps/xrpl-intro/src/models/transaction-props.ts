@@ -14,7 +14,13 @@ type NFTokenCreateOfferProps = Omit<NFTokenCreateOffer, "TransactionType" | "Acc
 
 // Props for the EscrowCreate transaction type
 type EscrowCreateProps = Omit<EscrowCreate, "TransactionType" | "Account"> &
-  ({ CancelAfter: number; FinishAfter?: number } | { CancelAfter?: number; FinishAfter: number })
+  (
+    | ({ CancelAfter: number } & (
+        | { FinishAfter?: number; Condition: string }
+        | { FinishAfter: number; Condition?: string }
+      ))
+    | { CancelAfter?: number; FinishAfter: number }
+  )
 
 export type TransactionPropsForSingleSign<T extends Transaction> = TxnOptions & {
   isMultisign?: false
