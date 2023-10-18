@@ -61,6 +61,9 @@ contract SimpleBank {
         uint256 withdrawalAmount = balances[owner];
         payable(owner).transfer(withdrawalAmount);
 
+        // re-initialize the owner balance to 0
+        balances[owner] = 0;
+
         emit Withdrawn(owner, withdrawalAmount);
     }
 
