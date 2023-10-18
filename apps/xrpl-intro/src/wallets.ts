@@ -1,4 +1,6 @@
 // todo: create and export the wallets from .env
 
-// import { Wallet } from "xrpl"
 // import "dotenv/config"
+// import { Wallet } from "xrpl"
+
+// https://xrpl.org/xrp-testnet-faucet.html
