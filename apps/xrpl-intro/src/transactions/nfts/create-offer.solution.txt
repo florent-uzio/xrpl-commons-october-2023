@@ -1,0 +1,49 @@
+import { NFTokenCreateOffer, xrpToDrops } from "xrpl"
+import { getXrplClient } from "../../client"
+import { TransactionPropsForSingleSign } from "../../models"
+
+const client = getXrplClient()
+
+/**
+ * Create an NFT Offer.
+ * Important:
+ * - For a SELL offer, define "Flags: NFTokenCreateOfferFlags.tfSellNFToken" and the Owner field must not be defined.
+ * - For a BUY offer, "Flags" must be undefined and the Owner field must be set.
+ *
+ * @returns A TxResponse<NFTokenCreateOffer>.
+ */
+
+export const createOffer = async ({
+  txn,
+  wallet,
+  showLogs = true,
+}: TransactionPropsForSingleSign<NFTokenCreateOffer>) => {
+  console.log("******* LET'S CREATE AN NFT OFFER *******")
+  console.log()
+
+  let { Amount, ...rest } = txn
+
+  // Convert the amount to drops (1 drop = .000001 XRP)
+  if (typeof Amount === "string") {
+    Amount = xrpToDrops(Amount)
+  }
+
+  // Construct the base transaction
+  const transaction: NFTokenCreateOffer = {
+    Account: wallet.address,
+    Amount,
+    TransactionType: "NFTokenCreateOffer",
+    ...rest,
+  }
+
+  const response = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  if (showLogs) {
+    console.log(response)
+  }
+
+  return response
+}

@@ -23,7 +23,7 @@ contract SimpleBank {
         _;
     }
 
-    function deposit() public payable {
+    function deposit() public onlyOwner payable {
         balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }
@@ -60,6 +60,9 @@ contract SimpleBank {
     function withdraw() public onlyOwner {
         uint256 withdrawalAmount = balances[owner];
         payable(owner).transfer(withdrawalAmount);
+
+        // re-initialize the owner balance to 0
+        balances[owner] = 0;
 
         emit Withdrawn(owner, withdrawalAmount);
     }

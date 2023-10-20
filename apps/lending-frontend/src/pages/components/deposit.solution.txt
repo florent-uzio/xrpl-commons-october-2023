@@ -12,7 +12,9 @@ import {
   InputLeftElement,
   Text,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { useWeb3 } from "../../shared/contexts"
 
 type DepositForm = {
   amount: string
@@ -26,11 +28,11 @@ type DepositForm = {
 export const Deposit = () => {
   const { register, handleSubmit } = useForm<DepositForm>()
 
-  // const { contract } = useWeb3()
+  const { contract } = useWeb3()
 
   const onSubmit: SubmitHandler<DepositForm> = async ({ amount }) => {
-    // todo: code the deposit function
-    alert("Code the deposit function")
+    if (!contract) return
+    await contract.deposit({ value: ethers.parseEther(amount) })
   }
 
   return (

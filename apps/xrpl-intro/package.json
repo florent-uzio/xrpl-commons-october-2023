@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
-    "xrpl": "^2.11.0"
+    "five-bells-condition": "^5.0.1",
+    "xrpl": "^2.13.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.1"
