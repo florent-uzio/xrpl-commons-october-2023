@@ -8,4 +8,4 @@ Run `npm install`.
 
 ## Next steps
 
-Go into each apps directory to see look at the source code.
+Go into each apps directory to look at the source code.
