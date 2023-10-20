@@ -4,7 +4,7 @@ This is a repo to showcase the interaction with the EVM Sidechain using Hardhat.
 
 ## Install the dependencies.
 
-At the root directory of this monorepo, run `npm install`. If you have done that previously, skip this section and go to `TODOs`.
+At the root directory of this monorepo, run `npm install` (this is where `turbo.json` is located for example). If you have done that previously, skip this section and go to `TODOs`.
 
 Then cd into this repo `cd apps/lending-contract`.
 
