@@ -4,7 +4,7 @@ import crypto from "crypto"
 import cc from "five-bells-condition"
 
 export const generateConditionAndFulfillment = () => {
-  console.log(color.bold("******* LET'S GENERATE A CRYPTO CONDITOON AND FULFILLMENT *******"))
+  console.log(color.bold("******* LET'S GENERATE A CRYPTO CONDITION AND FULFILLMENT *******"))
   console.log()
 
   // use cryptographically secure random bytes generation
