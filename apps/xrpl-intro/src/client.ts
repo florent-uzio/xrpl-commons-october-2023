@@ -8,7 +8,8 @@ const networks = {
   RIPPLE_TESTNET: "wss://s.altnet.rippletest.net:51233",
   XRPL_LABS_TESTNET: "wss://testnet.xrpl-labs.com",
   RIPPLE_AMM_DEVNET: "wss://amm.devnet.rippletest.net:51233/",
-  QUICKNODE: "",
+  QUICKNODE:
+    "wss://capable-frosty-dream.xrp-testnet.quiknode.pro/22aad0fb10b6d0d4a75b03c2bdd439e0b04824f8/",
 }
 
 let xrplClient: Client
