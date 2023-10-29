@@ -1,12 +1,12 @@
 import { signPaymentChannelClaim } from "xrpl"
 
 /**
- * A simple helper to regularly sign a claim with an increased amount
+ * A simple helper to regularly sign a claim with an amount increasing every second.
  *
  * @param channelId
  * @param privateKey
  */
-const signClaimWithInterval = (
+export const signClaimWithInterval = (
   channelId: string,
   privateKey: string,
   amount = 1,
@@ -17,6 +17,6 @@ const signClaimWithInterval = (
 
     console.log(`signature ${res} for an amount of ${amount}`)
 
-    amount = +(amount + 0.1).toFixed(2)
+    amount = +(amount + increase).toFixed(2)
   }, 1000)
 }
