@@ -7,7 +7,7 @@ const client = getXrplClient()
 export const claimPaymentChannel = async ({
   txn,
   wallet,
-  showLogs,
+  showLogs = true,
 }: TransactionPropsForSingleSign<PaymentChannelClaim>) => {
   console.log("LET'S CLAIM A PAYMENT CHANNEL")
 
