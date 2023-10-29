@@ -11,5 +11,14 @@ export const mintNft = async ({
 }: TransactionPropsForSingleSign<NFTokenMint>) => {
   console.log("LET'S MINT AN NFT")
 
+  const transaction: NFTokenMint = {
+    Account: wallet.address,
+    TransactionType: "NFTokenMint",
+    ...txn,
+  }
+
+  const response = await client.submitAndWait(transaction, { autofill: true, wallet })
+
+  console.log(response)
   // todo: code the mint nft function
 }

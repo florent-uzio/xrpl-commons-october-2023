@@ -21,5 +21,13 @@ export const createOffer = async ({
   console.log("******* LET'S CREATE AN NFT OFFER *******")
   console.log()
 
+  const transaction: NFTokenCreateOffer = {
+    Account: wallet.address,
+    TransactionType: "NFTokenCreateOffer",
+    ...txn,
+  }
+
+  const response = await client.submitAndWait(transaction, { autofill: true, wallet })
+
   // todo: code the create NFT offer function
 }

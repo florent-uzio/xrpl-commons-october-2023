@@ -5,6 +5,7 @@ import { Client } from "xrpl"
 
 // https://xrpl.org/public-servers.html
 const networks = {
+  RIPPLE_S1: "wss://s2.ripple.com:51234",
   RIPPLE_TESTNET: "wss://s.altnet.rippletest.net:51233",
   XRPL_LABS_TESTNET: "wss://testnet.xrpl-labs.com",
   RIPPLE_AMM_DEVNET: "wss://amm.devnet.rippletest.net:51233/",
