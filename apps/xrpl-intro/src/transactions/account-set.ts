@@ -15,5 +15,5 @@ export const accountSet = async ({
   console.log("******* LET'S CREATE AN ACCOUNT SET *******")
   console.log()
 
-  // todo: create the code to send a payment
+  // todo: create the code
 }
