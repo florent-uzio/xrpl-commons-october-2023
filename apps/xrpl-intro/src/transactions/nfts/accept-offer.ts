@@ -12,5 +12,20 @@ export const acceptOffer = async ({
   console.log("******* LET'S ACCEPT AN NFT OFFER *******")
   console.log()
 
-  // todo: code the accept NFT offer function
+  // Step 1
+  const transaction: NFTokenAcceptOffer = {
+    Account: wallet.address,
+    TransactionType: "NFTokenAcceptOffer",
+    ...txn,
+  }
+
+  // Step 2
+  const result = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  console.log(result)
+
+  return result
 }

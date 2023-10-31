@@ -11,5 +11,20 @@ export const setSignerList = async ({
 }: TransactionPropsForSingleSign<SignerListSet>) => {
   console.log("LET'S SET SOME SIGNERS")
 
-  // todo: code the function
+  // Step 1
+  const transaction: SignerListSet = {
+    Account: wallet.address,
+    TransactionType: "SignerListSet",
+    ...txn,
+  }
+
+  // Step 2
+  const result = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  console.log(result)
+
+  return result
 }

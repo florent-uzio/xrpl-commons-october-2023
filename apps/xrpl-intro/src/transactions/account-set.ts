@@ -15,5 +15,20 @@ export const accountSet = async ({
   console.log("******* LET'S CREATE AN ACCOUNT SET *******")
   console.log()
 
-  // todo: create the code
+  // Step 1 - Create the transaction
+  const transaction: AccountSet = {
+    Account: wallet.address,
+    TransactionType: "AccountSet",
+    ...txn,
+  }
+
+  // Step 2 - Sign / Submit
+  const result = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  console.log(result)
+
+  return result
 }

@@ -12,7 +12,9 @@ import {
   InputLeftElement,
   Text,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { useWeb3 } from "../../shared/contexts"
 
 type LendForm = {
   amount: string
@@ -25,12 +27,14 @@ type LendForm = {
  */
 export const Lend = () => {
   const { register, handleSubmit } = useForm<LendForm>()
-  // const { contract } = useWeb3()
+  const { contract } = useWeb3()
 
   // call the contract to issue a loan
   const onSubmit: SubmitHandler<LendForm> = async ({ amount }) => {
     // Todo code the function
-    alert("Code the lend function")
+    // alert("Code the lend function")
+    if (!contract) return
+    await contract.loan(ethers.parseEther(amount))
   }
 
   return (

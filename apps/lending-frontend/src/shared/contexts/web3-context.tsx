@@ -1,6 +1,7 @@
-import { JsonRpcSigner } from "ethers"
+import { ethers, JsonRpcSigner } from "ethers"
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react"
-import { SimpleBank } from "../../contracts"
+import { SimpleBank, SimpleBank__factory } from "../../contracts"
+import SimpleBankJson from "../../contracts/contract-address.json"
 
 export type Web3ContextApi = {
   account: string
@@ -34,15 +35,25 @@ export const Web3Provider: FC<Props> = ({ children }) => {
     // Define a new provider as ethers.BrowserProvider
     // Get the provider's signer
     // Set in state (setSigner)
+    const provider = new ethers.BrowserProvider(ethereum)
+    const signer = await provider.getSigner()
+    setSigner(signer)
 
     // Step 2 - Connect to MetaMask
     // Request the eth_requestAccounts
     // Get the the first account from the eth_requestAccounts list
     // Set it in state (setAccount)
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" })
+    const address = accounts[0]
+    setAccount(address)
 
     // Step 3 - Set the contract (setContract) using the signer and the hardhat SimpleBank__factory
+    const contractInstance = SimpleBank__factory.connect(SimpleBankJson.address, signer)
+    setContract(contractInstance)
 
     // Step 4 - Check if the connected metamask address is the one that deployed the contract (setIsOwner)
+    const owner = await contractInstance.owner()
+    setIsOwner(owner === signer.address)
   }
 
   const disconnect = () => {

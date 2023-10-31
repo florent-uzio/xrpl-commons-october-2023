@@ -20,5 +20,20 @@ export const createEscrow = async ({
   console.log(color.bold("******* LET'S CREATE AN ESCROW *******"))
   console.log()
 
-  // todo: code the function, don't forget to convert the Amount from "txn" with xrpToDrops
+  // Step 1
+  const transaction: EscrowCreate = {
+    Account: wallet.address,
+    TransactionType: "EscrowCreate",
+    ...txn,
+  }
+
+  // Step 2
+  const result = await client.submitAndWait(transaction, {
+    autofill: true,
+    wallet,
+  })
+
+  console.log(result)
+
+  return result
 }

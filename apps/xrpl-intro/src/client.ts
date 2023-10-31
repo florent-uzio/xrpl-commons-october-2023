@@ -8,7 +8,8 @@ const networks = {
   RIPPLE_TESTNET: "wss://s.altnet.rippletest.net:51233",
   XRPL_LABS_TESTNET: "wss://testnet.xrpl-labs.com",
   RIPPLE_AMM_DEVNET: "wss://amm.devnet.rippletest.net:51233/",
-  QUICKNODE: "",
+  QUICKNODE:
+    "wss://young-capable-sun.xrp-testnet.quiknode.pro/9b19476d0cdbb1a05b14d05aade40f5a1a662664/",
 }
 
 let xrplClient: Client
@@ -20,7 +21,7 @@ let xrplClient: Client
 export const getXrplClient = () => {
   // todo: write the code to create and return the XRPL client
   if (!xrplClient) {
-    xrplClient = new Client(networks.RIPPLE_TESTNET)
+    xrplClient = new Client(networks.QUICKNODE)
   }
 
   return xrplClient
